@@ -1,15 +1,15 @@
 import pytest
 import os
-from url_class import Url
+from url_class import WebCrawler
 from bs4 import BeautifulSoup
 import requests
 
-URL='https://www.pythontutorial.net/' # Url used to test functions
-SECOND_URL =  "https://justdvir.online/" # Url without www
+URL='https://www.pythontutorial.net/' # WebCrawler used to test functions
+SECOND_URL ="https://justdvir.online/" # WebCrawler without www
 
 
 def create_and_run_url_object(url, depth):
-    my_url = Url(url, depth=depth)
+    my_url = WebCrawler(url, depth=depth)
     my_url.run()
 
 
@@ -52,7 +52,26 @@ def test_can_save_the_correct_html_depth_zero():
         expected_html = f.read()
     assert soup.prettify() == expected_html
 
-# def test_can_save_the_correct_html_depth_one():
-#     create_and_run_url_object(URL, depth=1)
-#     expected_file_name = f'1/justdvir_online.html'
+# def test_fetch_html_depth_one():
+#     """
+#     the tests run agains a website that not changes
+#     the first link should be: https://www.linkedin.com/in/dvir-pashut-477992249/
+#     means the file name should be named: www_linkedin_com_in_dvir-pashut-477992249.html
+#     """
+#     create_and_run_url_object(SECOND_URL, depth=1)
+#     # asserting both depth 0 and 1
+#     expected_file_name_0 = f'0/justdvir_online.html'
+#     expected_file_name_1 = f'1/www_linkedin_com_in_dvir-pashut-477992249.html'
 #
+#     assert os.path.isfile(expected_file_name_0)
+#     assert os.path.isfile(expected_file_name_1)
+
+    # response = requests.get(SECOND_URL)
+    # soup = BeautifulSoup(response.text, "html.parser")
+    #
+    # with open(expected_file_name_1, 'r') as f:
+    #     expected_html = f.read()
+    # assert soup.prettify() == expected_html
+
+
+

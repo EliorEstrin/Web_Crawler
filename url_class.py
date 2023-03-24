@@ -4,11 +4,12 @@ from bs4 import BeautifulSoup
 import re
 
 
-class Url:
+class WebCrawler:
 
     def __init__(self, url, maximal_amount=1, depth=0):
         self.url = url
         self.depth = str(depth)
+        self.maximal_amount = maximal_amount # maximal amount of links per page
         self.current_depth = 0
 
     def get_valid_file_name(self):
@@ -44,6 +45,23 @@ class Url:
             soup = self.scan_and_save_page()
             file.write(str(soup.prettify()))
 
+    def search_for_links(self, limit=None):
+        counter = 0
+
+        # print all a href links from a page
+        soup = self.scan_and_save_page()
+        for link in soup.find_all('a'):
+            if counter >= self.maximal_amount:
+                break
+            # print(link.get('href'))
+            link = link.get('href')
+            # only links of https/http
+            if link.startswith("https://") or link.startswith("http://"):
+                counter += 1
+                print(link)
+
     def run(self):
         self.create_folders()
+        # start running 
         self.create_file()
+
