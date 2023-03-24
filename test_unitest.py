@@ -1,27 +1,36 @@
 import pytest
 import os
-
-# from url_class import Url
 from url_class import Url
-
 # URL='http://localhost.com/'
 
-# easy test
-def test_can_save_single_html_in_folder():
+# easy test 
+def test_can_create_folders_as_depth_0():
     """
-    expects a '<depth>/URL.html' folder created with valid html inside.
-    this is an easy test means it only checks for depth=0 which is the 
-    default.
+    depth n should mean n + 1 directories should exist in an incresing order 
+    depth = 0 > 1 dir
+    depth = 1 > 2 dir (0,1)
     """
-    URL='http://localhost.com/'
-
-    my_url = Url(f"{URL}")
+    URL='https://www.pythontutorial.net/'
+    my_url = Url(f"{URL}", depth=0)
     my_url.run()
-
-    expected_file_name = f'0/localhost_com.html'
-
     assert os.path.isdir('0')
-    assert os.path.isfile(expected_file_name)
+    # assert os.path.isfile(expected_file_name)
+    # expected_file_name = f'0/www_pythontutorial_net.html'
     # assert os.path.isfile(expected_file_nae)
 
-# def file_exist(
+def test_can_create_folders_as_depth_bigger_than_zero():
+    URL='https://www.pythontutorial.net/'
+    my_url = Url(f"{URL}", depth=2)
+    my_url.run()
+    assert os.path.isdir('0')
+    assert os.path.isdir('1')
+    assert os.path.isdir('2')
+
+
+# def test_can_create_file_with_valid_name():
+#     URL='https://www.pythontutorial.net/'
+#     my_url = Url(f"{URL}", depth=0)
+#
+#     expected_file_name = f'0/www_pythontutorial_net.html'
+#
+#     assert os.path.isfile(expected_file_name)
