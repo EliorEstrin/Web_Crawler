@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 
 URL='https://www.pythontutorial.net/' # Url used to test functions
+SECOND_URL =  "https://justdvir.online/" # Url without www
 
 
 def create_and_run_url_object(url, depth):
@@ -34,6 +35,11 @@ def test_can_create_file_with_valid_name_with_depth_zero():
     expected_file_name = f'0/www_pythontutorial_net.html'
     assert os.path.isfile(expected_file_name)
 
+def test_can_create_file_with_valid_name_no_www_depth_zero():
+    create_and_run_url_object(SECOND_URL , depth=0)
+    expected_file_name = f'0/justdvir_online.html'
+    assert os.path.isfile(expected_file_name)
+
 
 def test_can_save_the_correct_html_depth_zero():
     create_and_run_url_object(URL, depth=0)
@@ -45,3 +51,7 @@ def test_can_save_the_correct_html_depth_zero():
     with open('0/www_pythontutorial_net.html', 'r') as f:
         expected_html = f.read()
     assert soup.prettify() == expected_html
+
+# def test_can_save_the_correct_html_depth_one():
+#     create_and_run_url_object(URL, depth=1)
+
