@@ -14,9 +14,6 @@ def test_can_create_folders_as_depth_0():
     my_url = Url(f"{URL}", depth=0)
     my_url.run()
     assert os.path.isdir('0')
-    # assert os.path.isfile(expected_file_name)
-    # expected_file_name = f'0/www_pythontutorial_net.html'
-    # assert os.path.isfile(expected_file_nae)
 
 def test_can_create_folders_as_depth_bigger_than_zero():
     URL='https://www.pythontutorial.net/'
@@ -26,11 +23,8 @@ def test_can_create_folders_as_depth_bigger_than_zero():
     assert os.path.isdir('1')
     assert os.path.isdir('2')
 
-
 # def test_can_create_file_with_valid_name():
 #     URL='https://www.pythontutorial.net/'
 #     my_url = Url(f"{URL}", depth=0)
-#
 #     expected_file_name = f'0/www_pythontutorial_net.html'
-#
 #     assert os.path.isfile(expected_file_name)

@@ -11,16 +11,6 @@ class Url:
         self.depth = str(depth)
         print(os.path.exists(self.depth))
 
-        for folder_name in range(depth + 1):
-            if not os.path.exists(str(folder_name)):
-                print("creting a folder")
-                os.mkdir(str(folder_name))
-
-    def scan_and_save_page(self):
-        response = requests.get(self.url)
-        soup = BeautifulSoup(response.text, "html.parser")
-        print(soup.prettify())
-        return soup
 
     def get_valid_file_name(self):
         """
@@ -37,13 +27,24 @@ class Url:
 
         valid_url = re.sub(r'https?://', '', valid_url)
         return valid_url
+    
+    def create_folders(self):
+        for folder_name in range(int(self.depth) + 1):
+            if not os.path.exists(str(folder_name)):
+                print("creting a folder")
+                os.mkdir(str(folder_name))
 
-    def save_file(self):
-        file_path = f"{self.depth}/{self.get_valid_file_name()}.html"
-        print(file_path)
-        with open(f"{file_path}", "w", encoding='utf-8') as file:
-            soup = self.scan_and_save_page()
-            file.write(str(soup.prettify()))
+    # def save_file(self):
+    #     file_path = f"{self.depth}/{self.get_valid_file_name()}.html"
+    #     print(file_path)
+    #     with open(f"{file_path}", "w", encoding='utf-8') as file:
+    #         soup = self.scan_and_save_page()
+    #         file.write(str(soup.prettify()))
 
+    # def scan_and_save_page(self):
+    #     response = requests.get(self.url)
+    #     soup = BeautifulSoup(response.text, "html.parser")
+    #     print(soup.prettify())
+    #     return soup
     def run(self):
-        self.save_file()
+        self.create_folders()
