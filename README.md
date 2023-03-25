@@ -15,6 +15,9 @@ from web_crawler import WebCrawler
 
 # creating the object
 myCrawler = WebCrawler(url="https://example.com", depth=1, maximal_amount=10, unique_url=True)
+
+# starting the webCrawler
+myCrawler.run()
 ```
 
 # File Storage
