@@ -10,7 +10,6 @@ class WebCrawler:
         self.url = url
         self.depth = str(depth)
         self.maximal_amount = maximal_amount # maximal amount of links per page
-        # self.current_depth = 0
         
 
     def get_valid_file_name(self,url_to_validate):
@@ -41,7 +40,6 @@ class WebCrawler:
         return soup
 
     def create_html_files(self,current_url,depth=0):
-
         if int(depth) > int(self.depth):
             return "Files has been created"
         else:
@@ -53,13 +51,12 @@ class WebCrawler:
                 file.write(str(current_page.prettify()))
 
             # Extract new URLs from the HTML content and run the function recursivly on them
-            new_urls = self.search_for_links(page_html=current_page.prettify())
-            depth += 1
-            for link in new_urls:
-                self.create_html_files(link, depth)
-
-
-
+            # prevents the running to not scan urls that are not going to be used
+            if int(depth) < int(self.depth):
+                new_urls = self.search_for_links(page_html=current_page.prettify())
+                for link in new_urls:
+                    self.create_html_files(link, depth + 1)
+                
     def search_for_links(self, page_html):
         counter = 0
         links = []

@@ -37,7 +37,7 @@ def get_excpected_file_name(depth=0, url=""):
 
 
 def create_and_run_WebCrawler_object(url, depth, maximal_amount=1):
-    my_crawler = WebCrawler(url, depth=depth,maximal_amount=maximal_amount)
+    my_crawler = WebCrawler(url, depth=depth, maximal_amount=maximal_amount)
     my_crawler.run()
 
 
@@ -160,6 +160,3 @@ def test_object_can_fetch_more_than_one_html_when_depth_one():
         excpected_html = f.read()
     # each github page has uniqu identifier means a two page never will be the same
     assert excpected_responses[2].prettify()[:100] == excpected_html[:100]
-
-
-
