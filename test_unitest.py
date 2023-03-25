@@ -3,10 +3,24 @@ import os
 from url_class import WebCrawler
 from bs4 import BeautifulSoup
 import requests
+import re
 
 # URSL used for testing
 URL='https://www.pythontutorial.net/' # WebCrawler used to test functions
 SECOND_URL = "https://justdvir.online/" # WebCrawler without www
+
+def get_excpected_file_name(depth=0, url=""):
+    """
+    function gets a url depth and returns the expected name of the file.
+    for example: the url "www.python.com"" >> www_python_com.html
+    """
+    valid_url = re.sub(r"https?://", '', url)
+    valid_url = re.sub(r'[<>\.:\"/\\|?*]', '_', valid_url) #regex to match all illegar characters in a file
+    # replace
+    if valid_url[-1] == '_':
+        valid_url = valid_url[:-1] # remove the / at the end of a url
+    return f"{depth}/{valid_url}.html"
+    # pass
 
 
 def create_and_run_WebCrawler_object(url, depth, maximal_amount=1):
@@ -33,12 +47,12 @@ def test_object_can_create_folders_when_depth_bigger_than_zero():
 
 def test_object_can_create_file_with_valid_name_when_depth_zero():
     create_and_run_WebCrawler_object(URL, depth=0)
-    expected_file_name = f'0/www_pythontutorial_net.html'
+    expected_file_name = get_excpected_file_name(0, URL)
     assert os.path.isfile(expected_file_name)
 
 def test_object_can_create_file_with_valid_name_when_no_www_in_URL_and_depth_zero():
     create_and_run_WebCrawler_object(SECOND_URL, depth=0)
-    expected_file_name = f'0/justdvir_online.html'
+    expected_file_name = get_excpected_file_name(0, SECOND_URL)
     assert os.path.isfile(expected_file_name)
 
 
@@ -61,8 +75,8 @@ def test_object_can_fetch_html_when_depth_one():
     """
     create_and_run_WebCrawler_object(SECOND_URL, depth=1)
     # asserting both depth 0 and 1
-    expected_file_name_0 = f'0/justdvir_online.html'
-    expected_file_name_1 = f'1/www_linkedin_com_in_dvir-pashut-477992249.html'
+    expected_file_name_0 = get_excpected_file_name(0, SECOND_URL)
+    expected_file_name_1 = get_excpected_file_name(1, 'https://www.linkedin.com/in/dvir-pashut-477992249/')
 
     assert os.path.isfile(expected_file_name_0)
     assert os.path.isfile(expected_file_name_1)
@@ -88,14 +102,17 @@ def test_object_can_fetch_more_than_one_html_when_depth_one():
     """
     setting maximal amount=3
     expecting in folder /1 to have 3 files with the correct name and html
+    the url that are should be found is:
+
     """
     create_and_run_WebCrawler_object(SECOND_URL, depth=1, maximal_amount=3)
     
     # asset dir 0 exists with correct file
-    expected_file_name_0 = f'0/justdvir_online.html'
-    # assert dir 1 exists with correect 3 files and correct html inside 2 url is the same link
-    expected_file_name_1 = f'1/www_linkedin_com_in_dvir-pashut-477992249.html'
-    expected_file_name_2 = f'1/github_com_dvir-pashut_portfolio-.html'
+    expected_file_name_0 = get_excpected_file_name(0, SECOND_URL)
+
+    # assert dir 1 exists with correect 3 files and correct html inside 2 url is the same link        .
+    expected_file_name_1 = get_excpected_file_name(1,'https://www.linkedin.com/in/dvir-pashut-477992249/')
+    expected_file_name_2 = get_excpected_file_name(1,'https://github.com/dvir-pashut/portfolio-')
 
     assert os.path.isfile(expected_file_name_0)
     assert os.path.isfile(expected_file_name_1)
