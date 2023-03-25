@@ -12,7 +12,7 @@ class WebCrawler:
         self.maximal_amount = maximal_amount # maximal amount of links per page
         
 
-    def get_valid_file_name(self,url_to_validate):
+    def get_valid_file_name(self, url_to_validate):
         """
         The function validates the URL before saving the file
         remove https from the begging 
@@ -32,14 +32,13 @@ class WebCrawler:
             if not os.path.exists(str(folder_name)):
                 os.mkdir(str(folder_name))
 
-
-    def get_html_as_soup(self,url_to_fetch):
+    def get_html_as_soup(self, url_to_fetch):
         response = requests.get(url_to_fetch)
         soup = BeautifulSoup(response.text, "html.parser")
         # print(soup.prettify())
         return soup
 
-    def create_html_files(self,current_url,depth=0):
+    def create_html_files(self, current_url, depth=0):
         if int(depth) > int(self.depth):
             return "Files has been created"
         else:
