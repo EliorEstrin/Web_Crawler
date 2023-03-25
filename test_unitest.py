@@ -25,7 +25,7 @@ pages = [
 ]
 
 
-def get_excpected_file_name(depth=0, url=""):
+def get_excpected_file_name_when_depth_zero(depth=0, url=""):
     """
     function gets a url depth and returns the expected name of the file.
     for example: the url "www.python.com"" >> www_python_com.html
@@ -162,3 +162,25 @@ def test_object_can_fetch_more_than_one_html_when_depth_one():
         excpected_html = f.read()
     # each github page has uniqu identifier means a two page never will be the same
     assert excpected_responses[2].prettify()[:100] == excpected_html[:100]
+
+def test_object_saves_only_unique_files_depth_1():
+    create_and_run_WebCrawler_object(SECOND_URL, depth=1, maximal_amount=4)
+    # depth 0 test
+    expected_file_name_depth_0 = get_excpected_file_name(0, SECOND_URL)
+    # depth 1 , should contain 4 diffrent links
+    expected_file_name_depth_1_0 = get_excpected_file_name(0, pages[0]['links'][0]['url'])
+    expected_file_name_depth_1_1 = get_excpected_file_name(0, pages[0]['links'][1]['url'])
+    expected_file_name_depth_1_2 = get_excpected_file_name(0, pages[0]['links'][3]['url'])
+    expected_file_name_depth_1_3 = get_excpected_file_name(0, pages[0]['links'][5]['url'])
+
+    assert os.path.isfile(expected_file_name_depth_0)
+    assert os.path.isfile(expected_file_name_depth_1_0)
+    assert os.path.isfile(expected_file_name_depth_1_1)
+    assert os.path.isfile(expected_file_name_depth_1_2)
+    assert os.path.isfile(expected_file_name_depth_1_3)
+
+
+
+
+
+    
