@@ -6,7 +6,7 @@ import requests
 import re
 
 # URSL used for testing
-URL='https://www.pythontutorial.net/' # WebCrawler used to test functions
+URL = 'https://www.pythontutorial.net/' # WebCrawler used to test functions
 SECOND_URL = "https://justdvir.online/" # WebCrawler without www
 
 # Example for a page with links inside that used in the testing
@@ -77,8 +77,11 @@ def test_object_can_save_the_correct_html_when_depth_zero():
     soup = BeautifulSoup(response.text, "html.parser")
 
     # Read the HTML file into a a string and assert that is equal to what inside the file
-    with open('0/www_pythontutorial_net.html', 'r') as f:
+    expected_file_name = get_excpected_file_name(0, URL)
+    with open(expected_file_name, 'r') as f:
         expected_html = f.read()
+    # with open('0/www_pythontutorial_net.html', 'r') as f:
+    #     expected_html = f.read()
     assert soup.prettify() == expected_html
 
 def test_object_can_fetch_html_when_depth_one():
@@ -157,3 +160,6 @@ def test_object_can_fetch_more_than_one_html_when_depth_one():
         excpected_html = f.read()
     # each github page has uniqu identifier means a two page never will be the same
     assert excpected_responses[2].prettify()[:100] == excpected_html[:100]
+
+
+

@@ -67,16 +67,19 @@ class WebCrawler:
         # print all a href links from a page
         soup = BeautifulSoup(page_html, 'html.parser')
         # soup = self.get_html_as_soup()
+        # print(soup.find_all('a'))
         for link in soup.find_all('a'):
             if counter >= self.maximal_amount:
                 break
             # print(link.get('href'))
-            link = link.get('href')
-            # only links of https/http
-            if link.startswith("https://") or link.startswith("http://"):
-                counter += 1
-                links.append(link)
-                print(link)
+            if link.get('href') is not None:
+                link = link.get('href')
+                
+                # only links of https/http
+                if link.startswith("https://") or link.startswith("http://"):
+                    counter += 1
+                    links.append(link)
+                    print(link)
         return links
 
     def run(self):
