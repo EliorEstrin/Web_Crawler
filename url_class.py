@@ -10,7 +10,7 @@ class WebCrawler:
         self.url = url
         self.depth = str(depth)
         self.maximal_amount = maximal_amount # maximal amount of links per page
-        self.current_depth = 0
+        # self.current_depth = 0
         
 
     def get_valid_file_name(self,url_to_validate):
@@ -40,27 +40,23 @@ class WebCrawler:
         # print(soup.prettify())
         return soup
 
-    def create_files(self,current_url,depth=0):
-        print(current_url)
+    def create_html_files(self,current_url,depth=0):
 
         if int(depth) > int(self.depth):
             return "Files has been created"
         else:
-        # while self.current_depth < self.depth:
+
             file_path = f"{depth}/{self.get_valid_file_name(current_url)}.html"
-            
             current_page = ""
             with open(f"{file_path}", "w", encoding='utf-8') as file:
                 current_page = self.get_html_as_soup(current_url)
                 file.write(str(current_page.prettify()))
-                
-            
+
            # Extract URLs from the HTML content
             new_urls = self.search_for_links(page_html=current_page.prettify())
-            # self.current_depth += 1
             depth += 1
             for link in new_urls:
-                self.create_files(link, depth)
+                self.create_html_files(link, depth)
 
 
 
@@ -68,7 +64,6 @@ class WebCrawler:
         counter = 0
         links = []
 
-        print(page_html)
         # print all a href links from a page
         soup = BeautifulSoup(page_html, 'html.parser')
         # soup = self.get_html_as_soup()
@@ -87,5 +82,5 @@ class WebCrawler:
     def run(self):
         self.create_folders()
         # start running 
-        self.create_files(self.url)
+        self.create_html_files(self.url)
 
