@@ -34,4 +34,9 @@ This program was developed using Test-Driven Development (TDD) methodology, with
 - testdata.py: Contains test data for the program.
 -  test_advanced.py: Contains advanced level tests for the program, testing edge cases and more complex scenarios.
 - test_core_basis.py: Contains basic level tests for the program, testing its core functionality.
+<br>
+All tests can be run using pytest in the root directory of the program.
+```
+pytest
+```
 
