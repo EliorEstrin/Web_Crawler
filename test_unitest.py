@@ -9,6 +9,20 @@ import re
 URL='https://www.pythontutorial.net/' # WebCrawler used to test functions
 SECOND_URL = "https://justdvir.online/" # WebCrawler without www
 
+# Example for a page with links inside that used in the testing
+pages = [
+    {
+        'url': 'https://justdvir.online/',
+        'links': [
+            {'text': 'Link 1', 'url': 'https://www.linkedin.com/in/dvir-pashut-477992249/'},
+            {'text': 'Link 2', 'url': 'https://github.com/dvir-pashut/portfolio-'},
+            {'text': 'Link 3', 'url': 'https://github.com/dvir-pashut/portfolio-'},
+            {'text': 'Link 4', 'url': 'https://persona-generator.today'}
+        ]
+    },
+]
+
+
 def get_excpected_file_name(depth=0, url=""):
     """
     function gets a url depth and returns the expected name of the file.
@@ -20,7 +34,6 @@ def get_excpected_file_name(depth=0, url=""):
     if valid_url[-1] == '_':
         valid_url = valid_url[:-1] # remove the / at the end of a url
     return f"{depth}/{valid_url}.html"
-    # pass
 
 
 def create_and_run_WebCrawler_object(url, depth, maximal_amount=1):
@@ -50,6 +63,7 @@ def test_object_can_create_file_with_valid_name_when_depth_zero():
     expected_file_name = get_excpected_file_name(0, URL)
     assert os.path.isfile(expected_file_name)
 
+
 def test_object_can_create_file_with_valid_name_when_no_www_in_URL_and_depth_zero():
     create_and_run_WebCrawler_object(SECOND_URL, depth=0)
     expected_file_name = get_excpected_file_name(0, SECOND_URL)
@@ -72,18 +86,20 @@ def test_object_can_fetch_html_when_depth_one():
     the tests run agains a website that not changes
     the first link should be: https://www.linkedin.com/in/dvir-pashut-477992249/
     means the file name should be named: www_linkedin_com_in_dvir-pashut-477992249.html
+    and maximal amount = 1
     """
     create_and_run_WebCrawler_object(SECOND_URL, depth=1)
     # asserting both depth 0 and 1
     expected_file_name_0 = get_excpected_file_name(0, SECOND_URL)
-    expected_file_name_1 = get_excpected_file_name(1, 'https://www.linkedin.com/in/dvir-pashut-477992249/')
+    expected_file_name_1 = get_excpected_file_name(1, pages[0]['links'][0]['url'])
+
 
     assert os.path.isfile(expected_file_name_0)
     assert os.path.isfile(expected_file_name_1)
 
     # Asserting that the file have the corret html inside
     response_1 = requests.get(SECOND_URL)
-    response_2 = requests.get("https://www.linkedin.com/in/dvir-pashut-477992249/")
+    response_2 = requests.get(pages[0]['links'][0]['url'])
 
     soup_0 = BeautifulSoup(response_1.text, "html.parser")
     soup_1 = BeautifulSoup(response_2.text, "html.parser")
@@ -111,14 +127,16 @@ def test_object_can_fetch_more_than_one_html_when_depth_one():
     expected_file_name_0 = get_excpected_file_name(0, SECOND_URL)
 
     # assert dir 1 exists with correect 3 files and correct html inside 2 url is the same link        .
-    expected_file_name_1 = get_excpected_file_name(1,'https://www.linkedin.com/in/dvir-pashut-477992249/')
-    expected_file_name_2 = get_excpected_file_name(1,'https://github.com/dvir-pashut/portfolio-')
+    expected_file_name_1 = get_excpected_file_name(1,pages[0]['links'][0]['url'])
+    # expected_file_name_1 = get_excpected_file_name(1,'https://www.linkedin.com/in/dvir-pashut-477992249/')
+    expected_file_name_2 = get_excpected_file_name(1,pages[0]['links'][1]['url'])
+    # expected_file_name_2 = get_excpected_file_name(1,'https://github.com/dvir-pashut/portfolio-')
 
     assert os.path.isfile(expected_file_name_0)
     assert os.path.isfile(expected_file_name_1)
     assert os.path.isfile(expected_file_name_2)
     
-    excpected_links =  [SECOND_URL, 'https://www.linkedin.com/in/dvir-pashut-477992249/', 'https://github.com/dvir-pashut/portfolio-']
+    excpected_links = [SECOND_URL, pages[0]['links'][0]['url'], pages[0]['links'][1]['url']]
     excpected_responses = []
 
     for link in excpected_links:
