@@ -53,23 +53,33 @@ def test_can_save_the_correct_html_depth_zero():
         expected_html = f.read()
     assert soup.prettify() == expected_html
 
-# def test_fetch_html_depth_one():
-#     """
-#     the tests run agains a website that not changes
-#     the first link should be: https://www.linkedin.com/in/dvir-pashut-477992249/
-#     means the file name should be named: www_linkedin_com_in_dvir-pashut-477992249.html
-#     """
-#     create_and_run_url_object(SECOND_URL, depth=1)
-#     # asserting both depth 0 and 1
-#     expected_file_name_0 = f'0/justdvir_online.html'
-#     expected_file_name_1 = f'1/www_linkedin_com_in_dvir-pashut-477992249.html'
-#
-#     assert os.path.isfile(expected_file_name_0)
-#     assert os.path.isfile(expected_file_name_1)
+def test_fetch_html_depth_one():
+    """
+    the tests run agains a website that not changes
+    the first link should be: https://www.linkedin.com/in/dvir-pashut-477992249/
+    means the file name should be named: www_linkedin_com_in_dvir-pashut-477992249.html
+    """
+    create_and_run_url_object(SECOND_URL, depth=1)
+    # asserting both depth 0 and 1
+    expected_file_name_0 = f'0/justdvir_online.html'
+    expected_file_name_1 = f'1/www_linkedin_com_in_dvir-pashut-477992249.html'
 
-    # response = requests.get(SECOND_URL)
-    # soup = BeautifulSoup(response.text, "html.parser")
-    #
-    # with open(expected_file_name_1, 'r') as f:
-    #     expected_html = f.read()
-    # assert soup.prettify() == expected_html
+    assert os.path.isfile(expected_file_name_0)
+    assert os.path.isfile(expected_file_name_1)
+
+    # Asserting that the file have the corret html inside
+    response_1 = requests.get(SECOND_URL)
+    response_2 = requests.get("https://www.linkedin.com/in/dvir-pashut-477992249/")
+
+    soup_0 = BeautifulSoup(response_1.text, "html.parser")
+    soup_1 = BeautifulSoup(response_2.text, "html.parser")
+
+    # depth 0
+    with open(expected_file_name_0, 'r') as f:
+        expected_html = f.read()
+    assert soup_0.prettify() == expected_html
+
+    # depth 1
+    with open(expected_file_name_1, 'r') as f:
+        expected_html = f.read()
+    assert soup_1.prettify() == expected_html
