@@ -45,14 +45,14 @@ class WebCrawler:
         if int(depth) > int(self.depth):
             return "Files has been created"
         else:
-
+            # saving the current_url with valid name and .html suffix at the end
             file_path = f"{depth}/{self.get_valid_file_name(current_url)}.html"
             current_page = ""
             with open(f"{file_path}", "w", encoding='utf-8') as file:
                 current_page = self.get_html_as_soup(current_url)
                 file.write(str(current_page.prettify()))
 
-           # Extract URLs from the HTML content
+            # Extract new URLs from the HTML content and run the function recursivly on them
             new_urls = self.search_for_links(page_html=current_page.prettify())
             depth += 1
             for link in new_urls:
