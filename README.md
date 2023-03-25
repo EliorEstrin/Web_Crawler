@@ -19,7 +19,7 @@ myCrawler = WebCrawler(url="https://example.com", depth=1, maximal_amount=10, un
 
 # File Storage
 The HTML content for each downloaded page will be stored in a separate file with the naming convention `<depth>/<url>.html`. <br>
-Any characters that are not allowed in file names are replaced with underscores.<br> For example, if the starting URL is `https://www.example.com` and the recursion reaches a depth of 2, the HTML content for the page at `https://www.example.com/page.html` will be stored in the file 2/www_example_com_page_html.html.
+Any characters that are not allowed in file names are replaced with underscores.<br> For example, if the starting URL is `https://www.example.com` and the recursion reaches a depth of 2, the HTML content for the page at `https://www.example.com/page.html` will be stored in the file `2/www_example_com_page_html`.html.
 
 # Dependencies
 Get all the program dependencies by running
