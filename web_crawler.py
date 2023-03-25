@@ -6,10 +6,12 @@ import re
 
 class WebCrawler:
 
-    def __init__(self, url, maximal_amount=1, depth=0):
+    def __init__(self, url, maximal_amount=1, depth=0, unique_url=False):
         self.url = url
         self.depth = str(depth)
         self.maximal_amount = maximal_amount # maximal amount of links per page
+        self.unique = bool(unique_url)
+        self.downloaded_urls = [self.url]
         
 
     def get_valid_file_name(self, url_to_validate):
@@ -55,6 +57,8 @@ class WebCrawler:
                 new_urls = self.search_for_links(page_html=current_page.prettify())
                 for link in new_urls:
                     self.create_html_files(link, depth + 1)
+
+
                 
     def search_for_links(self, page_html):
         counter = 0
@@ -73,9 +77,21 @@ class WebCrawler:
                 
                 # only links of https/http
                 if link.startswith("https://") or link.startswith("http://"):
-                    counter += 1
+                    link = link.rstrip('/')
                     links.append(link)
-                    print(link)
+                    
+                    # if unique and the url exists counter would be incremented
+                    if self.unique and link in self.downloaded_urls:
+                        continue
+                        self.downloaded_urls = list(set(self.downloaded_urls))
+                        # links.append(link)
+                        # self.downloaded_urls.append(link)
+                    else:
+                        self.downloaded_urls = list(set(self.downloaded_urls))
+                        self.downloaded_urls.append(link)
+                        counter += 1
+                            
+                    # counter += 1
         return links
 
     def run(self):

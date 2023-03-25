@@ -1,13 +1,14 @@
-from url_class import WebCrawler
+from web_crawler import WebCrawler
 import requests
 
 
-# SECOND_URL ="https://justdvir.online/" # WebCrawler without www
-SECOND_URL ="https://en.wikipedia.org/wiki/Moyshe_Kulbak" # WebCrawler without www
+SECOND_URL ="https://justdvir.online/" # WebCrawler without www
+# SECOND_URL ="https://en.wikipedia.org/wiki/Moyshe_Kulbak" # WebCrawler without www
+# local_URL='https://www.ynetnews.com/'
 
-local_URL='https://www.ynetnews.com/'
-local_site = WebCrawler(url=SECOND_URL, depth=1, maximal_amount=2)
+myCrawler = WebCrawler(url=SECOND_URL, depth=1, maximal_amount=10, unique_url=True)
 
 # local_site.search_for_links(requests.get(SECOND_URL).text)
 
-local_site.run()
+myCrawler.run()
+print(myCrawler.downloaded_urls)
