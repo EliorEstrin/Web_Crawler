@@ -20,7 +20,7 @@ class WebCrawler:
         self.depth = str(depth)
         self.maximal_amount = maximal_amount # maximal amount of links per page
         self.unique = bool(unique_url)
-        self.downloaded_urls = [self.url]
+        self.downloaded_urls = []
         self.maximal_exceptions = 5
         self.current_exceptions = 0
 
@@ -73,25 +73,30 @@ class WebCrawler:
         :param current_url: The URL to download.
         :param depth: The current depth of the crawl.
         """
+        # Exit if to many exceptions occurded
         if self.current_exceptions >= self.maximal_exceptions:
             return None
-        else:
-            current_page = self.fetch_soup_from_url(current_url)
-            # saving the current_url with valid name and .html suffix at the end
-            file_path = f"{depth}/{self.sanitize_filename(current_url)}.html"
-            with open(f"{file_path}", "w", encoding='utf-8') as file:
-                # current_page = self.fetch_soup_from_url(current_url)
-                if current_page is not None:
-                    file.write(str(current_page.prettify()))
-                else:
-                    self.current_exceptions += 1
 
-            depth_in_range = int(depth) < int(self.depth)
-            if depth_in_range:
-                if current_page is not None:
-                    new_urls = self.search_for_links(page_html=current_page.prettify())
-                    for link in new_urls:
-                        self.download_html_content(link, depth + 1)
+        current_page = self.fetch_soup_from_url(current_url)
+        file_path = f"{depth}/{self.sanitize_filename(current_url)}.html"
+
+        if current_page is not None:
+            with open(f"{file_path}", "w", encoding='utf-8') as file:
+                print("hey")
+                file.write(current_page.prettify())
+                self.downloaded_urls.append(current_url)
+        else:
+            self.current_exceptions += 1
+            # if the file is None exepction occured
+            # Possible to raise value error
+
+        # A Check wether the scanning of urls should continue
+        depth_in_range = int(depth) < int(self.depth)
+        if depth_in_range:
+            if current_page is not None:
+                new_urls = self.search_for_links(page_html=current_page.prettify())
+                for link in new_urls:
+                    self.download_html_content(link, depth + 1)
 
     def search_for_links(self, page_html):
         """
@@ -99,27 +104,16 @@ class WebCrawler:
         The maximal amount of links to return can be set with the maximal_amount parameter.
         If unique_url is set to True, only unique URLs are returned.
         """
-        counter = 0
-        links = []
         soup = BeautifulSoup(page_html, 'html.parser')
+        # Save into links all links that start with https, http
+        links = [link.get('href').rstrip('/') for link in soup.find_all('a') 
+             if link.get('href') and re.match(r'^https?://', link.get('href'))]
 
-        for link in soup.find_all('a'):
-            if counter >= self.maximal_amount:
-                break
-            if link.get('href') is not None:
-                link = link.get('href')
-                if link.startswith("https://") or link.startswith("http://"):
-                    link = link.rstrip('/')
-                    links.append(link)
-                    
-                    # if unique and the url exists counter would be incremented
-                    if self.unique and link in self.downloaded_urls:
-                        continue
-                        self.downloaded_urls = list(set(self.downloaded_urls))
-                    else:
-                        self.downloaded_urls = list(set(self.downloaded_urls))
-                        self.downloaded_urls.append(link)
-                        counter += 1
+        if self.unique:
+            # Make sure the links in the list unique
+            links = list(set(links) - set(self.downloaded_urls))
+        else:
+            links = links[:self.maximal_amount]
         return links
 
     def report_status(self):
@@ -138,4 +132,3 @@ class WebCrawler:
         # start running
         self.download_html_content(self.url)
         self.report_status()
-
