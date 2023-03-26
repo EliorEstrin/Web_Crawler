@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 ################# Core Tests ###############
 
-def test_object_can_create_folders_when_depth_0():
+def test_object_can_create_directory_structure_when_depth_0():
     """
     Test if WebCrawler creates the folders.
     folders should be named as depth
@@ -14,7 +14,7 @@ def test_object_can_create_folders_when_depth_0():
     assert os.path.isdir('0')
 
 
-def test_object_can_create_folders_when_depth_bigger_than_zero():
+def test_object_can_create_directory_structure_when_depth_bigger_than_zero():
     """
     Test if WebCrawler creates the folders.
     folders should be name 0-int(depth)
@@ -24,7 +24,7 @@ def test_object_can_create_folders_when_depth_bigger_than_zero():
     assert os.path.isdir('1')
     assert os.path.isdir('2')
 
-
+#
 def test_object_can_create_file_with_valid_name_when_depth_zero():
     """
     Valid Name is a name thah can be saved in the Operating System file system
