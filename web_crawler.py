@@ -3,6 +3,9 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from status_printer import StatusPrinter
+
+
+
 class WebCrawler:
 
     def __init__(self, url, maximal_amount=1, depth=0, unique_url=False):
@@ -91,8 +94,7 @@ class WebCrawler:
                 self.downloaded_urls.append(current_url)
         else:
             self.current_exceptions += 1
-            # if the file is None exepction occured
-            # Possible to raise value error
+            # if the file is None excepction occured
 
         # A Check wether the scanning of urls should continue
         depth_in_range = int(depth) < int(self.depth)
@@ -124,7 +126,6 @@ class WebCrawler:
         status = self.current_exceptions < self.maximal_exceptions
         if status:
             print("Crawler Finished Running")
-            # exit 0
         else:
             print(f"Crawler failed: maximum number of exceptions ({self.maximal_exceptions}) exceeded")
 
