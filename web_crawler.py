@@ -7,6 +7,15 @@ import re
 class WebCrawler:
 
     def __init__(self, url, maximal_amount=1, depth=0, unique_url=False):
+        """
+        Initializes the WebCrawler object with the specified parameters.
+
+        Args:
+            url (str): The starting URL for the crawl.
+            maximal_amount (int): The maximum number of links to follow from each page.
+            depth (int): The maximum depth to crawl from the starting URL.
+            unique_url (bool): Whether to only download each unique URL once.
+        """
         self.url = url
         self.depth = str(depth)
         self.maximal_amount = maximal_amount # maximal amount of links per page
@@ -30,34 +39,40 @@ class WebCrawler:
         remove https from the begging 
         <depth>/<url>.html
         the url must not contain: /   ? * '' < > 
-        if any of illegar charactes apper it is replaced with _ 
+        if any of illegar charactes apper it is replaced with _
         """
         valid_url = re.sub(r"https?://", '', url_to_validate)
         valid_url = re.sub(r'[<>\.:\"/\\|?*]', '_', valid_url) #regex to match all illegar characters in a file
-        if valid_url[-1] == '_':
-            valid_url = valid_url[:-1] # remove the / at the end of a url
+        valid_url = valid_url.rstrip('_')
         return valid_url
 
     # Should be private
     def create_directory_structure(self):
+        """
+        Create the necessary directory structure for the specified
+        depth if the directories do not already exist.
+        """
         for folder_name in range(int(self.depth) + 1):
             if not os.path.exists(str(folder_name)):
                 os.mkdir(str(folder_name))
 
     def fetch_soup_from_url(self, url_to_fetch):
+        """
+        Fetches the HTML content from the specified URL and returns a BeautifulSoup object.
+        """
         response = self.send_request(url_to_fetch)
         if response is not None:
             soup = BeautifulSoup(response.text, "html.parser")
             return soup
         return None
 
-        # response = requests.get(url_to_fetch)
-        # soup = BeautifulSoup(response.text, "html.parser")
-        # # print(soup.prettify())
-        # return soup
-
     def download_html_content(self, current_url, depth=0):
-
+        """
+        Downloads the HTML content of the specified URL and saves it to a file.
+        Then extracts new URLs from the HTML content and runs the function recursively on them.
+        :param current_url: The URL to download.
+        :param depth: The current depth of the crawl.
+        """
         if self.current_exceptions >= self.maximal_exceptions:
             return None
         else:
@@ -71,7 +86,6 @@ class WebCrawler:
                 else:
                     self.current_exceptions += 1
 
-            # Extract new URLs from the HTML content and run recursibly
             depth_in_range = int(depth) < int(self.depth)
             if depth_in_range:
                 if current_page is not None:
@@ -79,24 +93,21 @@ class WebCrawler:
                     for link in new_urls:
                         self.download_html_content(link, depth + 1)
 
-
-                
     def search_for_links(self, page_html):
+        """
+        Search for links in the given HTML content and return a list of links.
+        The maximal amount of links to return can be set with the maximal_amount parameter.
+        If unique_url is set to True, only unique URLs are returned.
+        """
         counter = 0
         links = []
-
-        # print all a href links from a page
         soup = BeautifulSoup(page_html, 'html.parser')
-        # soup = self.fetch_soup_from_url()
-        # print(soup.find_all('a'))
+
         for link in soup.find_all('a'):
             if counter >= self.maximal_amount:
                 break
-            # print(link.get('href'))
             if link.get('href') is not None:
                 link = link.get('href')
-                
-                # only links of https/http
                 if link.startswith("https://") or link.startswith("http://"):
                     link = link.rstrip('/')
                     links.append(link)
@@ -105,16 +116,12 @@ class WebCrawler:
                     if self.unique and link in self.downloaded_urls:
                         continue
                         self.downloaded_urls = list(set(self.downloaded_urls))
-                        # links.append(link)
-                        # self.downloaded_urls.append(link)
                     else:
                         self.downloaded_urls = list(set(self.downloaded_urls))
                         self.downloaded_urls.append(link)
                         counter += 1
-                           
-                    # counter += 1
         return links
-    
+
     def report_status(self):
         status = self.current_exceptions < self.maximal_exceptions
         if status:
@@ -123,10 +130,12 @@ class WebCrawler:
         else:
             print(f"Crawler failed: maximum number of exceptions ({self.maximal_exceptions}) exceeded")
 
-
     def run(self):
+        """
+        Run the web crawler to download webpages and save them as HTML files.
+        """
         self.create_directory_structure()
-        # start running 
+        # start running
         self.download_html_content(self.url)
         self.report_status()
 
