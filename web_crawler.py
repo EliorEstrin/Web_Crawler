@@ -82,7 +82,7 @@ class WebCrawler:
 
         if current_page is not None:
             with open(f"{file_path}", "w", encoding='utf-8') as file:
-                print("hey")
+                print(f"saving file {file_path}, depth{depth}")
                 file.write(current_page.prettify())
                 self.downloaded_urls.append(current_url)
         else:
@@ -95,6 +95,7 @@ class WebCrawler:
         if depth_in_range:
             if current_page is not None:
                 new_urls = self.search_for_links(page_html=current_page.prettify())
+                # print(new_urls)
                 for link in new_urls:
                     self.download_html_content(link, depth + 1)
 
@@ -111,7 +112,7 @@ class WebCrawler:
 
         if self.unique:
             # Make sure the links in the list unique
-            links = list(set(links) - set(self.downloaded_urls))
+            links = list(set(links) - set(self.downloaded_urls))[:self.maximal_amount]
         else:
             links = links[:self.maximal_amount]
         return links
