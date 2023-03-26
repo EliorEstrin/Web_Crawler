@@ -2,8 +2,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import re
-
-
+from status_printer import StatusPrinter
 class WebCrawler:
 
     def __init__(self, url, maximal_amount=1, depth=0, unique_url=False):
@@ -23,6 +22,7 @@ class WebCrawler:
         self.downloaded_urls = []
         self.maximal_exceptions = 5
         self.current_exceptions = 0
+        self.status_printer = StatusPrinter()
 
     def send_request(self, url):
         try:
@@ -80,9 +80,13 @@ class WebCrawler:
         current_page = self.fetch_soup_from_url(current_url)
         file_path = f"{depth}/{self.sanitize_filename(current_url)}.html"
 
+        # StdOut status messages
+        self.status_printer.print_depth(depth)
+        self.status_printer.print_url(current_url)
+
         if current_page is not None:
             with open(f"{file_path}", "w", encoding='utf-8') as file:
-                print(f"saving file {file_path}, depth{depth}")
+                self.status_printer.print_file(file_path)
                 file.write(current_page.prettify())
                 self.downloaded_urls.append(current_url)
         else:
@@ -95,7 +99,6 @@ class WebCrawler:
         if depth_in_range:
             if current_page is not None:
                 new_urls = self.search_for_links(page_html=current_page.prettify())
-                # print(new_urls)
                 for link in new_urls:
                     self.download_html_content(link, depth + 1)
 
